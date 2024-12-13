@@ -4,19 +4,19 @@ export const TOKEN_KEY = "refine-auth";
 
 // Mock user data - move this to a separate file if you prefer
 const USERS = {
-  "john@example.com": {
+  "john@refine.com": {
     id: 1,
     name: "John Doe",
     avatar: "https://i.pravatar.cc/300?img=1",
     role: "Admin"
   },
-  "jane@example.com": {
+  "jane@refine.com": {
     id: 2,
     name: "Jane Smith",
     avatar: "https://i.pravatar.cc/300?img=2",
     role: "Editor"
   },
-  "bob@example.com": {
+  "bob@refine.com": {
     id: 3,
     name: "Bob Johnson",
     avatar: "https://i.pravatar.cc/300?img=3",

@@ -9,21 +9,21 @@ const getMockTeamMember = (id: number) => {
             id: 1,
             name: "John Doe",
             role: "Admin",
-            email: "john@example.com",
+            email: "john@refine.com",
             avatar: "https://i.pravatar.cc/300?img=1"
         },
         {
             id: 2,
             name: "Jane Smith",
             role: "Editor",
-            email: "jane@example.com",
+            email: "jane@refine.com",
             avatar: "https://i.pravatar.cc/300?img=2"
         },
         {
             id: 3,
             name: "Bob Johnson",
             role: "Viewer",
-            email: "bob@example.com",
+            email: "bob@refine.com",
             avatar: "https://i.pravatar.cc/300?img=3"
         }
     ];

@@ -5,6 +5,11 @@ import { generateUserJWT } from "../utils/jwtGenerator";
 import { integrationsProvider } from "../../providers/integrationsProvider";
 import type { Integration } from "../../types/integration";
 
+// Constants
+const IFRAME_ORIGIN = 'http://secondary.localhost.test:3000';
+const IFRAME_SCRIPT = `${IFRAME_ORIGIN}/inapp_script.js`;
+const CONTAINER_ID = 'iframe-container';
+
 declare global {
     interface Window {
         EmbeddedIframe: any;
@@ -33,11 +38,10 @@ export const IntegrationsList = () => {
 
     // Handle messages from iframe
     const handleIframeMessage = useCallback(async (event: MessageEvent) => {
-        if (event.origin !== 'http://secondary.localhost.test:3000') return;
+        if (event.origin !== IFRAME_ORIGIN) return;
 
         try {
             const type = event.data;
-            // console.log("type", type)
             let partnerId = '';
             let status = '';
 
@@ -62,7 +66,6 @@ export const IntegrationsList = () => {
                     return;
             }
 
-            // Only update if we have a valid partnerId and status
             if (partnerId && status) {
                 const updated = await integrationsProvider.updateStatus(partnerId, status, {});
                 setIntegrations(prev =>
@@ -76,11 +79,12 @@ export const IntegrationsList = () => {
         }
     }, []);
 
+    // Initialize iframe when user is loaded
     useEffect(() => {
         if (userLoading || !user || initialized.current) return;
 
         const userJWT = getNewJwtToken();
-        const container = document.getElementById('iframe-container');
+        const container = document.getElementById(CONTAINER_ID);
         if (!container) return;
 
         // Add message listener
@@ -91,16 +95,16 @@ export const IntegrationsList = () => {
             initialized.current = true;
 
             const script = document.createElement("script");
-            script.src = "http://secondary.localhost.test:3000/inapp_script.js";
+            script.src = IFRAME_SCRIPT;
             script.async = true;
 
             script.onload = () => {
                 if (window.EmbeddedIframe) {
                     try {
                         const embeddedIframe = new window.EmbeddedIframe({
-                            iframeOrigin: 'http://secondary.localhost.test:3000',
-                            trustedOrigins: ['http://secondary.localhost.test:3000'],
-                            containerId: 'iframe-container',
+                            iframeOrigin: IFRAME_ORIGIN,
+                            trustedOrigins: [IFRAME_ORIGIN],
+                            containerId: CONTAINER_ID,
                             initialToken: userJWT,
                             getJwtToken: async () => getNewJwtToken(),
                             integrations: integrations
@@ -119,9 +123,10 @@ export const IntegrationsList = () => {
             initializeIframe();
         });
 
+        // Cleanup function
         return () => {
             window.removeEventListener('message', handleIframeMessage);
-            const script = document.querySelector('script[src="http://secondary.localhost.test:3000/inapp_script.js"]');
+            const script = document.querySelector(`script[src="${IFRAME_SCRIPT}"]`);
             if (script?.parentNode) {
                 script.parentNode.removeChild(script);
             }
@@ -144,7 +149,7 @@ export const IntegrationsList = () => {
     return (
         <Card sx={{ p: 2 }}>
             <div
-                id="iframe-container"
+                id={CONTAINER_ID}
                 style={{
                     width: "100%",
                     height: "100%"

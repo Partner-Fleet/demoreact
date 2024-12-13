@@ -35,8 +35,8 @@ export const generateUserJWT = (user: any): string => {
             user_type: user.role || 'User',
         },
         account: {
-            external_id: 'Demo Account',
-            name: 'Demo Account',  // You can make this dynamic
+            external_id: 'refine.com',
+            name: 'Refine',  // You can make this dynamic
             tier: 'Enterprise',
         },
         exp: exp
