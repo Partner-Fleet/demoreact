@@ -2,10 +2,32 @@ import type { AuthProvider } from "@refinedev/core";
 
 export const TOKEN_KEY = "refine-auth";
 
+// Mock user data - move this to a separate file if you prefer
+const USERS = {
+  "john@example.com": {
+    id: 1,
+    name: "John Doe",
+    avatar: "https://i.pravatar.cc/300?img=1",
+    role: "Admin"
+  },
+  "jane@example.com": {
+    id: 2,
+    name: "Jane Smith",
+    avatar: "https://i.pravatar.cc/300?img=2",
+    role: "Editor"
+  },
+  "bob@example.com": {
+    id: 3,
+    name: "Bob Johnson",
+    avatar: "https://i.pravatar.cc/300?img=3",
+    role: "Viewer"
+  }
+};
+
 export const authProvider: AuthProvider = {
-  login: async ({ username, email, password }) => {
-    if ((username || email) && password) {
-      localStorage.setItem(TOKEN_KEY, username);
+  login: async ({ email, password }) => {
+    if (email && password) {
+      localStorage.setItem(TOKEN_KEY, email);
       return {
         success: true,
         redirectTo: "/",
@@ -16,7 +38,7 @@ export const authProvider: AuthProvider = {
       success: false,
       error: {
         name: "LoginError",
-        message: "Invalid username or password",
+        message: "Invalid email or password",
       },
     };
   },
@@ -40,14 +62,22 @@ export const authProvider: AuthProvider = {
       redirectTo: "/login",
     };
   },
-  getPermissions: async () => null,
+  getPermissions: async () => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token && USERS[token]) {
+      return USERS[token].role;
+    }
+    return null;
+  },
   getIdentity: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
+    if (token && USERS[token]) {
       return {
-        id: 1,
-        name: "John Doe",
-        avatar: "https://i.pravatar.cc/300",
+        id: USERS[token].id,
+        name: USERS[token].name,
+        avatar: USERS[token].avatar,
+        email: token,
+        role: USERS[token].role,
       };
     }
     return null;

@@ -34,6 +34,13 @@ import {
   CategoryList,
   CategoryShow,
 } from "./pages/categories";
+import {
+  TeamList,
+  TeamShow,
+} from "./pages/team";
+import {
+  IntegrationsList,
+} from "./pages/integrations";
 import { ForgotPassword } from "./pages/forgotPassword";
 import { Login } from "./pages/login";
 import { Register } from "./pages/register";
@@ -41,7 +48,6 @@ import { Register } from "./pages/register";
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <CssBaseline />
@@ -72,6 +78,22 @@ function App() {
                     show: "/categories/show/:id",
                     meta: {
                       canDelete: true,
+                    },
+                  },
+                  {
+                    name: "team",
+                    list: "/team",
+                    show: "/team/show/:id",
+                    meta: {
+                      canDelete: false,
+                    },
+                  },
+                  {
+                    name: "integrations",
+                    list: "/integrations",
+                    meta: {
+                      label: "Integrations",
+                      canDelete: false,
                     },
                   },
                 ]}
@@ -111,6 +133,13 @@ function App() {
                       <Route path="edit/:id" element={<CategoryEdit />} />
                       <Route path="show/:id" element={<CategoryShow />} />
                     </Route>
+                    <Route path="/team">
+                      <Route index element={<TeamList />} />
+                      <Route path="show/:id" element={<TeamShow />} />
+                    </Route>
+                    <Route path="/integrations">
+                      <Route index element={<IntegrationsList />} />
+                    </Route>
                     <Route path="*" element={<ErrorComponent />} />
                   </Route>
                   <Route
@@ -136,7 +165,6 @@ function App() {
                 <UnsavedChangesNotifier />
                 <DocumentTitleHandler />
               </Refine>
-              <DevtoolsPanel />
             </DevtoolsProvider>
           </RefineSnackbarProvider>
         </ColorModeContextProvider>
